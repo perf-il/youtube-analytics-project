@@ -13,9 +13,10 @@ class Video:
         self.video_response = Video.youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
                                                           id=video_id).execute()
         self.title = self.video_response['items'][0]['snippet']['title']
-        self.url = 'https://www.youtube.com/watch/' + self.video_id
+        self.url = 'https://youtu.be/' + self.video_id
         self.view_count = self.video_response['items'][0]['statistics']['viewCount']
         self.like_count = self.video_response['items'][0]['statistics']['likeCount']
+        self.duration = self.video_response['items'][0]['contentDetails']['duration']
 
     def __str__(self):
         return self.title
