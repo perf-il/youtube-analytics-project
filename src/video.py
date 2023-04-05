@@ -1,6 +1,6 @@
-# from channel import Channel
 import os
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 
 class Video:
@@ -12,11 +12,14 @@ class Video:
         self.video_id = video_id
         self.video_response = Video.youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
                                                           id=video_id).execute()
-        self.title = self.video_response['items'][0]['snippet']['title']
-        self.url = 'https://youtu.be/' + self.video_id
-        self.view_count = self.video_response['items'][0]['statistics']['viewCount']
-        self.like_count = self.video_response['items'][0]['statistics']['likeCount']
-        self.duration = self.video_response['items'][0]['contentDetails']['duration']
+        try:
+            self.title = self.video_response['items'][0]['snippet']['title']
+            self.url = 'https://youtu.be/' + self.video_id
+            self.view_count = self.video_response['items'][0]['statistics']['viewCount']
+            self.like_count = self.video_response['items'][0]['statistics']['likeCount']
+            self.duration = self.video_response['items'][0]['contentDetails']['duration']
+        except IndexError:
+            self.title = self.url = self.view_count = self.like_count = self.duration = None
 
     def __str__(self):
         return self.title
@@ -30,5 +33,4 @@ class PLVideo(Video):
 
     def get_playlist(self):
         return Video.youtube.playlistItems().list(playlistId=self.playlist_id, part='contentDetails', maxResults=50,).execute()
-
 
